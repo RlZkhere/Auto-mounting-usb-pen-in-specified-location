@@ -1,23 +1,23 @@
 #!/bin/bash 
-variabile=$(lsblk -f /dev/sdb 2>/dev/null ; echo $? | grep -Eo '[0-9]{1,4}')
-variabile2=$(mount | grep '/dev/sdb' >>/dev/null ; echo $? | grep -Eo '[0-9]{1,4}')
+CHECKIFCONNECTED=$(lsblk -f /dev/sdb 2>/dev/null ; echo $? | grep -Eo '[0-9]{1,4}')
+CHECKIFMOUNTED=$(mount | grep '/dev/sdb' >>/dev/null ; echo $? | grep -Eo '[0-9]{1,4}')
 {
-if [ $variabile2 -eq 0 ] 2>/dev/null
+if [ $CHECKIFMOUNTED -eq 0 ] 2>/dev/null
 then
-echo -e "\e[31mERRORE\e[0m\nChiavetta già montata"
+echo -e "\e[31mERROR\e[0m\nDevice already mounted"
 else 
-if [ $variabile -eq 32 ] 2>/dev/null
+if [ $CHECKIFCONNECTED -eq 32 ] 2>/dev/null
 then   
 sudo systemctl kill udisks2 2>/dev/null
-echo "Inserisci la chiavetta"
+echo "Plug the usb pen"
 sleep 5
 fi
 sudo mount /dev/sdb1 /run/mount 2>/dev/null 
 if [ $? -eq 0 ] 
 then 
-echo "Device montato in /run/mount da $USER" 
+echo "Device mounted in /run/mount da $USER" 
 else 
-echo -e "\e[31mImpossibile eseguire il comando:\e[0m\nChiavetta non inserita o non leggibile\n"
+echo -e "\e[31mFatal Error:\e[0m\nUsb pen not plugged or corrupted\n"
 fi
 fi
 }
