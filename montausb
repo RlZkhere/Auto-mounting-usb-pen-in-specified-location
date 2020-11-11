@@ -1,6 +1,7 @@
 #!/bin/bash 
 CHECKIFCONNECTED=$(lsblk -f /dev/sdb 2>/dev/null ; echo $? | grep -Eo '[0-9]{1,4}')
 CHECKIFMOUNTED=$(mount | grep '/dev/sdb' >>/dev/null ; echo $? | grep -Eo '[0-9]{1,4}')
+CHECKTHESERVICE=$(systemctl status udisks2 >>/dev/null ; echo $? | grep -Eo '[0-9]{1,4}')
 {
 if [ $CHECKIFMOUNTED -eq 0 ] 2>/dev/null
 then
@@ -8,7 +9,10 @@ echo -e "\e[31mERROR\e[0m\nDevice already mounted"
 else 
 if [ $CHECKIFCONNECTED -eq 32 ] 2>/dev/null
 then   
-sudo systemctl kill udisks2 2>/dev/null
+if [ $CHECKTHESERVICE -ne 3 ]
+then 
+sudo systemctl kill udisks2
+fi
 echo "Plug the usb pen"
 sleep 5
 fi
