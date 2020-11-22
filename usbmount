@@ -1,28 +1,33 @@
 #!/bin/bash 
 CHECKIFCONNECTED=$(lsblk -f /dev/sdb 2>/dev/null ; echo $? | grep -Eo '[0-9]{1,4}')
 CHECKIFMOUNTED=$(mount | grep '/dev/sdb' >>/dev/null ; echo $? | grep -Eo '[0-9]{1,4}')
-CHECKTHESERVICE=$(systemctl status udisks2 >>/dev/null ; echo $? | grep -Eo '[0-9]{1,4}')
-{
+variabile3=$(ls ~/.montausb/mountpoint 2>>/dev/null ; echo $? | grep -Eo '[0-9]{1,4}')
+variabile4=$(cat ~/.montausb/mountpoint 2>>/dev/null) 
+if [ $variabile3 -ne 0 ] 2>>/dev/null
+then 
+echo Type the mountpoint path and press space; 
+read '-d '
+echo -e "\n"
+mkdir ~/.montausb 2>>/dev/null
+touch ~/.montausb/mountpoint
+echo ${REPLY} > ~/.montausb/mountpoint 2>/dev/null
+else 
 if [ $CHECKIFMOUNTED -eq 0 ] 2>/dev/null
 then
-echo -e "\e[31mERROR\e[0m\nDevice already mounted"
+echo -e "\e[31mERROR\e[0m\nUsb pen already mounted"
 else 
 if [ $CHECKIFCONNECTED -eq 32 ] 2>/dev/null
 then   
-if [ $CHECKTHESERVICE -ne 3 ]
-then 
-sudo systemctl kill udisks2
-fi
+sudo systemctl kill udisks2 2>/dev/null
 echo "Plug the usb pen"
 sleep 5
-fi
-sudo mount /dev/sdb1 /run/mount 2>/dev/null 
-if [ $? -eq 0 ] 
+fi 
+sudo mount /dev/sdb1 $variabile4  
+if [ $? -eq 0 ] 2>/dev/null
 then 
-echo "Device mounted in /run/mount da $USER" 
+echo "Device mounted in $variabile4 from $USER" 
 else 
 echo -e "\e[31mFatal Error:\e[0m\nUsb pen not plugged or corrupted\n"
 fi
 fi
-}
-
+fi
