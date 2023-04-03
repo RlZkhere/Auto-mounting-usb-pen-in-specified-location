@@ -1,4 +1,5 @@
 # Auto-mounting-usb-pen-in-specified-location
-Script to mount the usb pen in specific location.
-You have to change the name of the device (if isn't /dev/sdb1) with the name of your device.
+This script can be used for mount a device (specifically /dev/sdb1) in a specific location.
+After the first setup you can modify the mountpoin setting by editing the ** ~/.montausb/mountpoint ** file
+For changing the device that have to be mounted you have to change the "dev/sdb1" with "$YOURDEVICE" in the executable file.
 
